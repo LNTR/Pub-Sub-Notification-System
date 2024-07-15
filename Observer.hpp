@@ -7,5 +7,5 @@ public:
     virtual ~Observer();
 
 protected:
-    Observer();
+    Observer(){};
 };

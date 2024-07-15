@@ -5,6 +5,8 @@ find_package(Boost COMPONENTS REQUIRED)
 link_libraries(wsock32 ws2_32 ${Boost_LIBRARIES})
 add_executable(client client.cpp)
 add_executable(server server.cpp)
+add_executable(test test.cpp)
+
 
 
 # For later use: used for printing variable names in cmake
