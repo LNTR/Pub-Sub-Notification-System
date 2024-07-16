@@ -1,8 +1,7 @@
 #include <string>
 #include <vector>
 #include <unordered_set>
-#include "Subject.hpp"
-#include "Observer.hpp"
+#include "ObserverPattern.hpp"
 
 using std::string, std::vector, std::unordered_set;
 
@@ -16,5 +15,5 @@ public:
     string pull_new_message();
 
 private:
-    vector<string> message_vector;
+    vector<string> message_queue;
 };

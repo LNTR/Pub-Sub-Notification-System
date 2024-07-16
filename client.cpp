@@ -1,28 +1,20 @@
-#include <iostream>
-#include <boost/asio.hpp>
-#include <vector>
-#include <chrono>
-#include <thread>
+#include "Client.hpp"
 
-namespace asio = boost::asio;
-namespace ip = asio::ip;
-
-using std::string, std::array, std::cout, std::vector;
-
-int main()
+Client::Client(string topic, ClientType type) : io_context(), socket(io_context)
 {
-    boost::system::error_code error_code;
-    asio::io_context io_context;
-    ip::address server_address = ip::make_address("127.0.0.1");
-    ip::port_type server_port = ip::port_type(334);
+    this->type = type;
+    this->topic = topic;
+}
+
+void Client::connect(string ip, string port)
+{
+    ip::address server_address = ip::make_address(ip);
+    ip::port_type server_port = ip::port_type(std::stoi(port));
     ip::tcp::endpoint endpoint(server_address, server_port);
-    ip::tcp::socket socket(io_context);
     socket.connect(endpoint);
-    array<char, 70> char_buffer;
-    asio::mutable_buffer buffer = asio::buffer(char_buffer, 70);
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    int char_count = socket.read_some(buffer);
-    string message(char_buffer.begin(), char_count);
-    cout << message;
-    cout << "Hello from Client\n";
+}
+
+void Client::disconnect()
+{
+    socket.close();
 }

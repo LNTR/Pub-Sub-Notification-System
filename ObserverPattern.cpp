@@ -1,5 +1,4 @@
-#include "Observer.hpp"
-#include "Subject.hpp"
+#include "ObserverPattern.hpp"
 
 void Subject::attach(Observer *observer)
 {

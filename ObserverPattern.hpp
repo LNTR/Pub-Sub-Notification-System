@@ -1,7 +1,19 @@
-#include "Observer.hpp"
+
 #include <unordered_set>
 #include <mutex>
+
 using std::unordered_set, std::mutex;
+
+class Observer
+{
+public:
+    virtual void update(Subject *changed_subject) = 0;
+    virtual ~Observer();
+
+protected:
+    Observer(){};
+};
+
 class Subject
 {
 

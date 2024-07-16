@@ -4,48 +4,37 @@
 #include <chrono>
 #include <thread>
 #include <string>
-#include "Observer.hpp"
-#include "GlobalMessageQueue.hpp"
+#include <array>
+#include <boost/asio.hpp>
 
 namespace asio = boost::asio;
 namespace ip = asio::ip;
 
-using std::string, std::vector;
-
+using std::string, std::vector, std::array;
+enum ClientType
+{
+    publisher,
+    subscriber
+};
 class Client
 {
 public:
-    Client(string topic);
+    Client(string topic, ClientType type);
     ~Client();
     void connect(string ip, string port);
     void disconnect();
-    string get_subscribed_topic();
 
 private:
+    asio::io_context io_context;
+    ip::tcp::socket socket;
     string topic;
+    ClientType type;
+    array<char, 1024> char_buffer;
 };
 
-class Publisher : public Client
+class ClientPublisher : public Client
 {
 public:
-    Publisher(string topic) : Client(topic){};
-    void publish_message(Subject *subject);
-};
-
-class Subscriber : public Client, public Observer
-{
-public:
-    Subscriber(string topic) : Client(topic){};
-    void update(Subject *changed_subject)
-    {
-        if (global_message_queue == changed_subject)
-        {
-            string new_message = global_message_queue->pull_new_message();
-            local_buffer.push_back(new_message);
-        }
-    };
-
-private:
-    vector<string> local_buffer;
-    GlobalMessageQueue *global_message_queue;
+    ClientPublisher(string topic);
+    void publish_message(string message);
 };
