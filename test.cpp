@@ -1,34 +1,30 @@
 #include <iostream>
+
+using namespace std;
+
 class Foo
 {
-private:
-    int a = 20;
 
 public:
-    int b;
-    virtual int buz() = 0;
-
-protected:
-    int c = 40;
+    virtual void buz1();
+    virtual void buz2();
 };
+
+void Foo::buz1()
+{
+    cout << "Buz1 Virtual\n";
+}
+void Foo::buz2()
+{
+    cout << "Buz2 Virtual\n";
+}
 
 class Bar : public Foo
 {
-public:
-    void printA()
-    {
-        std::cout << c << std::endl;
-    }
-    int buz();
 };
 
-int Bar::buz()
+int main()
 {
-    return 0;
-}
-
-main()
-{
-    Bar bar;
-    bar.printA();
+    Bar foo;
+    foo.buz1();
 }

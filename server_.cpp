@@ -11,20 +11,21 @@ namespace ip = asio::ip;
 using std::string, std::array, std::cout, std::thread, std::cin;
 void handle_client(ip::tcp::socket socket)
 {
+    boost::system::error_code error_code;
     auto thread_id = std::this_thread::get_id();
     std::stringstream stream;
     stream << thread_id;
     string message = "This is from server thread " + stream.str() + "\n";
-    auto buffer = asio::buffer(message, message.length());
-    asio::write(socket, buffer);
+    array<char, 1024> char_buffer;
 
+    asio::mutable_buffer buffer = asio::buffer(char_buffer, message.length());
+    socket.write_some(buffer, error_code);
     for (;;)
     {
-
         std::getline(cin, message);
         message += "\n";
-        auto buffer = asio::buffer(message, message.length());
-        socket.write_some(buffer);
+        asio::mutable_buffer buffer = asio::buffer(message, message.length());
+        socket.write_some(buffer, error_code);
     }
 }
 int main()
@@ -33,7 +34,7 @@ int main()
 
     asio::io_context io_context;
     ip::address address = ip::make_address("127.0.0.1");
-    ip::port_type port = ip::port_type(334);
+    ip::port_type port = ip::port_type(88);
 
     ip::tcp::endpoint endpoint(address, port);
 
@@ -42,8 +43,8 @@ int main()
     for (;;)
     {
         acceptor.accept(socket);
-        thread connection(handle_client, std::move(socket));
+        // thread connection(handle_client, std::move(socket));
         handle_client(std::move(socket));
-        connection.detach();
+        // connection.detach();
     }
 }

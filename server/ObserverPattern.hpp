@@ -1,9 +1,11 @@
 
 #include <unordered_set>
 #include <mutex>
+#include <string>
 
-using std::unordered_set, std::mutex;
+using std::unordered_set, std::mutex, std::string;
 
+class Subject;
 class Observer
 {
 public:
@@ -11,21 +13,28 @@ public:
     virtual ~Observer();
 
 protected:
-    Observer(){};
+    Observer();
 };
 
 class Subject
 {
 
 public:
-    virtual void attach(Observer *) = 0;
-    virtual void detach(Observer *) = 0;
-    virtual void notify() = 0;
+    virtual void attach(Observer *);
+    virtual void detach(Observer *);
+    virtual void notify();
 
 protected:
     Subject(){};
     mutex shared_lock;
+    mutex subscribe_lock;
 
 private:
     unordered_set<Observer *> _observers;
+};
+
+struct Aspect
+{
+    string topic;
+    string message;
 };

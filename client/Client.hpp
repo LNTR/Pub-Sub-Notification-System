@@ -11,30 +11,36 @@ namespace asio = boost::asio;
 namespace ip = asio::ip;
 
 using std::string, std::vector, std::array;
-enum ClientType
-{
-    publisher,
-    subscriber
-};
+
 class Client
 {
 public:
-    Client(string topic, ClientType type);
-    ~Client();
+    Client(string topic, int type);
     void connect(string ip, string port);
     void disconnect();
+    string get_topic();
 
 private:
     asio::io_context io_context;
-    ip::tcp::socket socket;
     string topic;
-    ClientType type;
-    array<char, 1024> char_buffer;
+    int type;
+    void initialize_client();
+
+protected:
+    ip::tcp::socket socket;
 };
 
 class ClientPublisher : public Client
 {
 public:
     ClientPublisher(string topic);
-    void publish_message(string message);
+    void push_new_message(string message);
+};
+
+class ClientSubscriber : public Client
+{
+public:
+    ClientSubscriber(string topic);
+
+    void pull_new_message();
 };

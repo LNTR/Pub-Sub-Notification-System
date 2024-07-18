@@ -16,7 +16,7 @@ int main()
     boost::system::error_code error_code;
     asio::io_context io_context;
     ip::address server_address = ip::make_address("127.0.0.1");
-    ip::port_type server_port = ip::port_type(334);
+    ip::port_type server_port = ip::port_type(88);
     ip::tcp::endpoint endpoint(server_address, server_port);
     ip::tcp::socket socket(io_context);
     socket.connect(endpoint);
