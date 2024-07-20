@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include <boost/algorithm/string.hpp>
 
 using std::string, std::move, ip::tcp;
 
@@ -56,17 +57,16 @@ void ServerSubscriber::update(Subject *changed_subject)
     }
 }
 
-bool is_publisher(tcp::socket &socket)
+ClientMetaData get_meta_data(tcp::socket &socket)
 {
-
+    vector<string> split_vector;
     array<char, 1024> char_buffer;
     boost::system::error_code error_code;
     asio::mutable_buffer buffer = asio::buffer(char_buffer, 1024);
     int char_count = socket.read_some(buffer, error_code);
     string message(char_buffer.begin(), char_count);
-    if (message == "1")
-    {
-        return true;
-    }
-    return false;
+    boost::split(split_vector, message, boost::is_any_of("--"), boost::token_compress_on);
+    string type = split_vector.at(0);
+    string topic = split_vector.at(1);
+    return ClientMetaData{topic, type};
 }

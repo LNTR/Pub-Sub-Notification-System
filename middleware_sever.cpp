@@ -5,18 +5,18 @@
 using std::thread, std::cout;
 NotificationQueue notification_queue;
 
-void handle_publisher(ip::tcp::socket socket_)
+void handle_publisher(ip::tcp::socket socket_, string topic)
 {
-    ServerPublisher publisher("TOPIC1", std::move(socket_), &notification_queue);
+    ServerPublisher publisher(topic, std::move(socket_), &notification_queue);
     for (;;)
     {
         publisher.read_new_message();
     }
 }
 
-void handle_subscriber(ip::tcp::socket socket_)
+void handle_subscriber(ip::tcp::socket socket_, string topic)
 {
-    ServerSubscriber subscriber("TOPIC1", std::move(socket_), &notification_queue);
+    ServerSubscriber subscriber(topic, std::move(socket_), &notification_queue);
 
     for (;;)
     {
@@ -40,14 +40,15 @@ int main()
     for (;;)
     {
         acceptor.accept(socket);
-        if (is_publisher(socket))
+        ClientMetaData meta_data = get_meta_data(socket);
+        if (meta_data.type == "1")
         {
-            thread connection(handle_publisher, std::move(socket));
+            thread connection(handle_publisher, std::move(socket), meta_data.topic);
             connection.detach();
         }
         else
         {
-            thread connection(handle_subscriber, std::move(socket));
+            thread connection(handle_subscriber, std::move(socket), meta_data.topic);
             connection.detach();
         }
     }

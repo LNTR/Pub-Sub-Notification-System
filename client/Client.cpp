@@ -7,11 +7,6 @@ Client::Client(string topic, int type) : io_context(), socket(io_context)
     this->type = type;
 }
 
-string Client::get_topic()
-{
-    return this->topic;
-}
-
 void Client::connect(string ip, string port)
 {
     ip::address server_address = ip::make_address(ip);
@@ -24,6 +19,8 @@ void Client::connect(string ip, string port)
 void Client::initialize_client()
 {
     string message = std::to_string(type);
+    message += "--" + topic;
+
     auto buffer = asio::buffer(message, message.length());
     socket.write_some(buffer);
     socket.wait(socket.wait_write);

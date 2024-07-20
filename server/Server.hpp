@@ -1,10 +1,11 @@
-#include <array>
-#include <boost/asio.hpp>
 
 #ifndef GLOBAL_NOTIFICATION_QUEUE
 #define GLOBAL_NOTIFICATION_QUEUE
 #include "NotificationQueue.hpp"
 #endif
+
+#include <array>
+#include <boost/asio.hpp>
 
 namespace asio = boost::asio;
 namespace ip = asio::ip;
@@ -38,5 +39,10 @@ private:
     ip::tcp::socket socket;
 };
 
-// Replace with factory method
-bool is_publisher(ip::tcp::socket &socket);
+struct ClientMetaData
+{
+    string topic;
+    string type;
+};
+
+ClientMetaData get_meta_data(ip::tcp::socket &socket);

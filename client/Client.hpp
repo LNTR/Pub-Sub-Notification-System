@@ -18,7 +18,6 @@ public:
     Client(string topic, int type);
     void connect(string ip, string port);
     void disconnect();
-    string get_topic();
 
 private:
     asio::io_context io_context;

@@ -1,10 +1,14 @@
 #include "client/Client.hpp"
 
-int main()
+int main(int argc, char **argv)
 {
     std::system("cls");
-    ClientSubscriber client("TOPIC");
-    client.connect("127.0.0.1", "88");
+    string ip = argv[1];
+    string port = argv[2];
+    string topic = argv[3];
+
+    ClientSubscriber client(topic);
+    client.connect(ip, port);
     for (;;)
     {
         string message = client.pull_new_message();
