@@ -11,9 +11,6 @@ class Observer
 public:
     virtual void update(Subject *changed_subject) = 0;
     virtual ~Observer();
-
-protected:
-    Observer();
 };
 
 class Subject
@@ -25,16 +22,9 @@ public:
     virtual void notify();
 
 protected:
-    Subject(){};
     mutex shared_lock;
     mutex subscribe_lock;
 
 private:
     unordered_set<Observer *> _observers;
-};
-
-struct Aspect
-{
-    string topic;
-    string message;
 };

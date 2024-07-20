@@ -1,28 +1,26 @@
-#include <string>
 #include <array>
 #include <boost/asio.hpp>
-#include <list>
 
-#ifndef GLOBAL_MESSAGE_QUEUE
-#define GLOBAL_MESSAGE_QUEUE
-#include "GlobalMessageQueue.hpp"
+#ifndef GLOBAL_NOTIFICATION_QUEUE
+#define GLOBAL_NOTIFICATION_QUEUE
+#include "NotificationQueue.hpp"
 #endif
 
 namespace asio = boost::asio;
 namespace ip = asio::ip;
 
-using std::string, std::array, std::list;
+using std::string, std::array;
 
 class ServerPublisher
 {
 
 public:
-    ServerPublisher(string topic, ip::tcp::socket socket_, GlobalMessageQueue *);
+    ServerPublisher(string topic, ip::tcp::socket socket_, NotificationQueue *);
     void read_new_message();
     void publish_message(string message);
 
 private:
-    GlobalMessageQueue *global_message_queue;
+    NotificationQueue *notification_queue;
     string topic;
     ip::tcp::socket socket;
 };
@@ -30,12 +28,12 @@ private:
 class ServerSubscriber : public Observer
 {
 public:
-    ServerSubscriber(string topic, ip::tcp::socket socket_, GlobalMessageQueue *);
-    string get_topic();
+    ServerSubscriber(string topic, ip::tcp::socket socket_, NotificationQueue *);
     void update(Subject *changed_subject);
+    ~ServerSubscriber();
 
 private:
-    GlobalMessageQueue *global_message_queue;
+    NotificationQueue *notification_queue;
     string topic;
     ip::tcp::socket socket;
 };

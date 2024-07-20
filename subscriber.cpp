@@ -7,7 +7,8 @@ int main()
     client.connect("127.0.0.1", "88");
     for (;;)
     {
-        client.pull_new_message();
+        string message = client.pull_new_message();
+        std::cout << message;
     }
     return 0;
 }

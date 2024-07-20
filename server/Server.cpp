@@ -1,13 +1,11 @@
-#include <iostream>
-#include <unordered_map>
 #include "Server.hpp"
 
-using std::string, std::cout, std::cin;
+using std::string, std::move, ip::tcp;
 
-ServerPublisher::ServerPublisher(string topic, ip::tcp::socket socket_, GlobalMessageQueue *global_message_queue) : socket(std::move(socket_))
+ServerPublisher::ServerPublisher(string topic, tcp::socket socket_, NotificationQueue *notification_queue) : socket(move(socket_))
 {
     this->topic = topic;
-    this->global_message_queue = global_message_queue;
+    this->notification_queue = notification_queue;
 };
 
 void ServerPublisher::read_new_message()
@@ -26,38 +24,39 @@ void ServerPublisher::read_new_message()
 
 void ServerPublisher::publish_message(string message)
 {
-    Aspect aspect = {topic, message};
-    global_message_queue->push_new_message(aspect);
+    Notification aspect = {topic, message};
+    notification_queue->push_new_notification(aspect);
 }
 
-ServerSubscriber::ServerSubscriber(string topic, ip::tcp::socket socket_, GlobalMessageQueue *global_message_queue) : socket(std::move(socket_))
+ServerSubscriber::ServerSubscriber(string topic, tcp::socket socket_, NotificationQueue *notification_queue) : socket(move(socket_))
 {
     this->topic = topic;
-    this->global_message_queue = global_message_queue;
+    this->notification_queue = notification_queue;
+    this->notification_queue->attach(this);
 }
 
-string ServerSubscriber::get_topic()
+ServerSubscriber::~ServerSubscriber()
 {
-    return topic;
+    this->notification_queue->detach(this);
 }
 
 void ServerSubscriber::update(Subject *changed_subject)
 {
-    if (global_message_queue == changed_subject)
+    if (notification_queue == changed_subject)
     {
         boost::system::error_code error_code;
 
-        Aspect new_message = global_message_queue->pull_new_message();
+        Notification new_notification = notification_queue->pull_new_notification();
 
-        if (new_message.topic == topic)
+        if (new_notification.topic == topic)
         {
-            asio::mutable_buffer buffer = asio::buffer(new_message.message, new_message.message.length());
+            asio::mutable_buffer buffer = asio::buffer(new_notification.message, new_notification.message.length());
             socket.write_some(buffer, error_code);
         }
     }
 }
 
-bool is_publisher(ip::tcp::socket &socket)
+bool is_publisher(tcp::socket &socket)
 {
 
     array<char, 1024> char_buffer;

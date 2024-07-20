@@ -4,12 +4,8 @@ project(middleware VERSION 0.1.0 LANGUAGES C CXX)
 find_package(Boost COMPONENTS REQUIRED)
 link_libraries(wsock32 ws2_32 ${Boost_LIBRARIES})
 
-add_executable(client_ client_.cpp)
-add_executable(server_ server_.cpp)
-
-
 add_library(Client client/Client.cpp)
-add_library(Server server/Server.cpp server/ObserverPattern.cpp server/GlobalMessageQueue.cpp)
+add_library(Server server/Server.cpp server/ObserverPattern.cpp server/NotificationQueue.cpp)
 
 add_executable(subscriber subscriber.cpp)
 target_link_libraries(subscriber PRIVATE Client)
@@ -22,7 +18,10 @@ add_executable(middleware_sever middleware_sever.cpp)
 target_link_libraries(middleware_sever PRIVATE Server)
 
 
-add_executable(test test.cpp)
+# add_executable(test test.cpp)
+
+
+
 # For later use: used for printing variable names in cmake
 # get_cmake_property(_variableNames VARIABLES)
 # list (SORT _variableNames)

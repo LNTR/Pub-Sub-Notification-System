@@ -21,7 +21,6 @@ void Subject::notify()
     {
         observer->update(this);
     }
-}
+};
 
-Observer::Observer(){};
 Observer::~Observer(){};

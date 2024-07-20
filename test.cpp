@@ -8,6 +8,7 @@ class Foo
 public:
     virtual void buz1();
     virtual void buz2();
+    virtual ~Foo() = 0;
 };
 
 void Foo::buz1()
@@ -16,15 +17,22 @@ void Foo::buz1()
 }
 void Foo::buz2()
 {
-    cout << "Buz2 Virtual\n";
+    cout << "Buz2 Solid\n";
 }
-
+Foo::~Foo()
+{
+}
 class Bar : public Foo
 {
+public:
+    Bar()
+    {
+        cout << "Bar Desctructor called";
+    }
 };
 
 int main()
 {
     Bar foo;
-    foo.buz1();
+    foo.buz2();
 }

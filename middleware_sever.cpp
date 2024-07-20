@@ -3,20 +3,21 @@
 #include <iostream>
 
 using std::thread, std::cout;
+NotificationQueue notification_queue;
 
-GlobalMessageQueue global_message_queue;
-
-void handle_publisher(ServerPublisher publisher)
+void handle_publisher(ip::tcp::socket socket_)
 {
+    ServerPublisher publisher("TOPIC1", std::move(socket_), &notification_queue);
     for (;;)
     {
         publisher.read_new_message();
     }
 }
 
-void handle_subscriber(ServerSubscriber subscriber)
+void handle_subscriber(ip::tcp::socket socket_)
 {
-    global_message_queue.attach(&subscriber);
+    ServerSubscriber subscriber("TOPIC1", std::move(socket_), &notification_queue);
+
     for (;;)
     {
     }
@@ -41,14 +42,12 @@ int main()
         acceptor.accept(socket);
         if (is_publisher(socket))
         {
-            ServerPublisher publisher("TOPIC2", std::move(socket), &global_message_queue);
-            thread connection(handle_publisher, std::move(publisher));
+            thread connection(handle_publisher, std::move(socket));
             connection.detach();
         }
         else
         {
-            ServerSubscriber subscriber("TOPIC1", std::move(socket), &global_message_queue);
-            thread connection(handle_subscriber, std::move(subscriber));
+            thread connection(handle_subscriber, std::move(socket));
             connection.detach();
         }
     }

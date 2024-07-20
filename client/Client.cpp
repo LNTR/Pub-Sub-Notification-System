@@ -46,12 +46,12 @@ void ClientPublisher::push_new_message(string message)
 
 ClientSubscriber::ClientSubscriber(string topic) : Client(topic, 0) {}
 
-void ClientSubscriber::pull_new_message()
+string ClientSubscriber::pull_new_message()
 {
     array<char, 1024> char_buffer;
     boost::system::error_code error_code;
     asio::mutable_buffer buffer = asio::buffer(char_buffer, 1024);
     int char_count = socket.read_some(buffer, error_code);
     string message(char_buffer.begin(), char_count);
-    std::cout << message;
+    return message;
 }

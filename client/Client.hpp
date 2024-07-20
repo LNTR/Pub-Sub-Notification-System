@@ -42,5 +42,5 @@ class ClientSubscriber : public Client
 public:
     ClientSubscriber(string topic);
 
-    void pull_new_message();
+    string pull_new_message();
 };
