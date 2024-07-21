@@ -2,11 +2,12 @@
 #include <boost/algorithm/string.hpp>
 
 using std::string, std::move, ip::tcp;
+NotificationQueue global_notification_queue;
 
-ServerPublisher::ServerPublisher(string topic, tcp::socket socket_, NotificationQueue *notification_queue) : socket(move(socket_))
+ServerPublisher::ServerPublisher(string topic, tcp::socket socket_) : socket(move(socket_))
 {
     this->topic = topic;
-    this->notification_queue = notification_queue;
+    this->notification_queue = &global_notification_queue;
 };
 
 void ServerPublisher::read_new_message()
@@ -29,10 +30,10 @@ void ServerPublisher::publish_message(string message)
     notification_queue->push_new_notification(aspect);
 }
 
-ServerSubscriber::ServerSubscriber(string topic, tcp::socket socket_, NotificationQueue *notification_queue) : socket(move(socket_))
+ServerSubscriber::ServerSubscriber(string topic, tcp::socket socket_) : socket(move(socket_))
 {
     this->topic = topic;
-    this->notification_queue = notification_queue;
+    this->notification_queue = &global_notification_queue;
     this->notification_queue->attach(this);
 }
 

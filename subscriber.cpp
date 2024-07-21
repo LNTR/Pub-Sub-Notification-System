@@ -9,10 +9,16 @@ int main(int argc, char **argv)
 
     ClientSubscriber client(topic);
     client.connect(ip, port);
+
     for (;;)
     {
         string message = client.pull_new_message();
         std::cout << message;
+        if (message == "terminate")
+        {
+            client.disconnect();
+            break;
+        }
     }
     return 0;
 }

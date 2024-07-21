@@ -3,11 +3,10 @@
 #include <iostream>
 
 using std::thread, std::cout;
-NotificationQueue notification_queue;
 
 void handle_publisher(ip::tcp::socket socket_, string topic)
 {
-    ServerPublisher publisher(topic, std::move(socket_), &notification_queue);
+    ServerPublisher publisher(topic, std::move(socket_));
     for (;;)
     {
         publisher.read_new_message();
@@ -16,7 +15,7 @@ void handle_publisher(ip::tcp::socket socket_, string topic)
 
 void handle_subscriber(ip::tcp::socket socket_, string topic)
 {
-    ServerSubscriber subscriber(topic, std::move(socket_), &notification_queue);
+    ServerSubscriber subscriber(topic, std::move(socket_));
 
     for (;;)
     {

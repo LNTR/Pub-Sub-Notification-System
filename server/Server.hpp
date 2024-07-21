@@ -11,12 +11,11 @@ namespace asio = boost::asio;
 namespace ip = asio::ip;
 
 using std::string, std::array;
-
 class ServerPublisher
 {
 
 public:
-    ServerPublisher(string topic, ip::tcp::socket socket_, NotificationQueue *);
+    ServerPublisher(string topic, ip::tcp::socket socket_);
     void read_new_message();
     void publish_message(string message);
 
@@ -29,14 +28,14 @@ private:
 class ServerSubscriber : public Observer
 {
 public:
-    ServerSubscriber(string topic, ip::tcp::socket socket_, NotificationQueue *);
+    ServerSubscriber(string topic, ip::tcp::socket socket_);
     void update(Subject *changed_subject);
     ~ServerSubscriber();
 
 private:
-    NotificationQueue *notification_queue;
     string topic;
     ip::tcp::socket socket;
+    NotificationQueue *notification_queue;
 };
 
 struct ClientMetaData

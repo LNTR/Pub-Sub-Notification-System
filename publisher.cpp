@@ -14,10 +14,19 @@ int main(int argc, char **argv)
 
     for (;;)
     {
-        string test;
-        std::getline(std::cin, test);
-        test += "\n";
-        client.push_new_message(test);
+        string user_input;
+        std::getline(std::cin, user_input);
+        if (user_input == "terminate")
+        {
+            client.push_new_message(user_input);
+            client.disconnect();
+            break;
+        }
+        else
+        {
+            user_input += "\n";
+            client.push_new_message(user_input);
+        }
     }
     return 0;
 }
